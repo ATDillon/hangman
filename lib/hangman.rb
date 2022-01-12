@@ -7,6 +7,7 @@ class Hangman
     @player = player
     @dictionary = File.readlines('5desk.txt')
     @word = word_picker
+    @guessed = []
   end
 
   def word_picker
