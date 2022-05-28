@@ -1,10 +1,12 @@
+require_relative 'player'
+
 # Holds script for the game hangman
 class Hangman
   attr_reader :guessed
 
   private
 
-  attr_accessor :word
+  attr_accessor :word, :tries
   attr_writer :guessed
   attr_reader :player, :dictionary
 
@@ -12,6 +14,7 @@ class Hangman
     @player = player
     @dictionary = File.readlines('5desk.txt')
     @word = word_picker
+    @tries = 8
     @guessed = []
   end
 
@@ -33,7 +36,63 @@ class Hangman
     result.join('')
   end
 
-  def word_display(string)
+  def word_display(string = word)
     puts letter_hider(string)
+  end
+
+  def player_guess
+    player.guess(self)
+  end
+
+  def guess_included?(guess)
+    return true if guess.length == 1 && word.include?(guess)
+
+    false
+  end
+
+  def tries_remaining
+    puts "Tries remaining: #{tries}"
+  end
+
+  def victory?(guess)
+    return true if guess == word
+
+    true if letter_hider(word) == word
+  end
+
+  def victory
+    puts "The secret word is #{word}! Congratulations #{player.name}, you win!"
+  end
+
+  def lose
+    puts "You lose! Better luck next time! The secret word was #{word}"
+  end
+
+  def round(guess)
+    return if victory?(guess)
+
+    guessed.push guess
+
+    self.tries -= 1 unless guess_included?(guess)
+
+    tries_remaining
+    word_display
+  end
+
+  def game
+    word_display
+    while tries.positive?
+      guess = player_guess
+      round(guess)
+
+      break victory if victory?(guess)
+    end
+    lose unless victory?(guess)
+  end
+
+  public
+
+  def play_hangman
+    game
   end
 end
