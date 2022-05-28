@@ -20,14 +20,14 @@ class Hangman
 
   def word_picker
     loop do
-      new_word = dictionary[Random.rand(dictionary.length)].chomp
+      new_word = dictionary[Random.rand(dictionary.length)].chomp.downcase
       break new_word unless new_word.length < 5 || new_word.length > 12
     end
   end
 
   def letter_hider(string)
     result = string.split('').map do |letter|
-      if guessed.include?(letter.downcase)
+      if guessed.include?(letter)
         letter
       else
         '-'
