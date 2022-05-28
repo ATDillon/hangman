@@ -12,7 +12,7 @@ class Hangman
 
   def initialize(player:)
     @player = player
-    @dictionary = File.readlines('5desk.txt')
+    @dictionary = File.readlines('google-10000-english-no-swears.txt')
     @word = word_picker
     @tries = 8
     @guessed = []
