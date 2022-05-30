@@ -63,7 +63,7 @@ class Hangman
     end
   end
 
-  def letter_hider(string)
+  def hidden_word(string = word)
     result = string.split('').map do |letter|
       if guessed.include?(letter)
         letter
@@ -72,10 +72,6 @@ class Hangman
       end
     end
     result.join('')
-  end
-
-  def word_display(string = word)
-    puts letter_hider(string)
   end
 
   def player_guess
@@ -88,14 +84,10 @@ class Hangman
     false
   end
 
-  def tries_remaining
-    puts "Tries remaining: #{tries}"
-  end
-
   def victory?(guess)
     return true if guess == word
 
-    true if letter_hider(word) == word
+    true if hidden_word(word) == word
   end
 
   def victory
@@ -115,14 +107,14 @@ class Hangman
 
     self.tries -= 1 unless guess_included?(guess)
 
-    tries_remaining
-    word_display
+    puts "Tries remaining: #{tries}"
+    puts hidden_word
   end
 
   protected
 
   def game
-    word_display
+    puts hidden_word
     while tries.positive?
       guess = player_guess
       round(guess)
