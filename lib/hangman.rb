@@ -1,4 +1,5 @@
 require_relative 'player'
+require 'yaml'
 
 # Holds script for the game hangman
 class Hangman
@@ -16,6 +17,43 @@ class Hangman
     @word = word_picker
     @tries = 8
     @guessed = []
+  end
+
+  def start_menu
+    puts 'Let\'s play Hangman! Type !load or !start to load or start a game. Use !save to save and quit once started.'
+
+    begin
+      response = player_guess
+      raise StandardError unless ['!start', '!load'].include?(response)
+    rescue StandardError
+      puts 'Invalid input, please try again'
+      retry
+    end
+
+    game if response == '!start'
+    load_game.game if response == '!load'
+  end
+
+  def save_game
+    save = File.open('saves/save.csv', 'w')
+    save.puts YAML.dump(self)
+    save.close
+    exit
+  end
+
+  def no_saves
+    puts 'No saves exist, returning to start menu'
+    start_menu
+  end
+
+  def load_game
+    return no_saves unless File.exist?('saves/save.csv')
+
+    save = File.open('saves/save.csv', 'r')
+    save_file = save.read
+    save.close
+
+    YAML.safe_load(save_file, [Hangman, Player])
   end
 
   def word_picker
@@ -71,6 +109,8 @@ class Hangman
   def round(guess)
     return if victory?(guess)
 
+    save_game if guess == '!save'
+
     guessed.push guess
 
     self.tries -= 1 unless guess_included?(guess)
@@ -78,6 +118,8 @@ class Hangman
     tries_remaining
     word_display
   end
+
+  protected
 
   def game
     word_display
@@ -93,6 +135,6 @@ class Hangman
   public
 
   def play_hangman
-    game
+    start_menu
   end
 end

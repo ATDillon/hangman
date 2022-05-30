@@ -1,5 +1,7 @@
 # Holds player data and methods
 class Player
+  attr_reader :name
+
   private
 
   def initialize(name:)
