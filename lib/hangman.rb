@@ -1,5 +1,6 @@
 require_relative 'player'
 require 'yaml'
+require 'pry-byebug'
 
 # Holds script for the game hangman
 class Hangman
@@ -78,6 +79,10 @@ class Hangman
     player.guess(self)
   end
 
+  def incorrect_letters
+    guessed.each_with_object([]) { |guess, array| array << guess if word.include?(guess) == false && guess.length == 1 }
+  end
+
   def guess_included?(guess)
     return true if guess.length == 1 && word.include?(guess)
 
@@ -109,6 +114,7 @@ class Hangman
 
     puts "Tries remaining: #{tries}"
     puts hidden_word
+    puts "Incorrect letters guessed: #{incorrect_letters}"
   end
 
   protected
