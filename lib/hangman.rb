@@ -54,7 +54,7 @@ class Hangman
     save_file = save.read
     save.close
 
-    YAML.safe_load(save_file, [Hangman, Player])
+    YAML.safe_load(save_file, [self.class, player.class])
   end
 
   def word_picker
