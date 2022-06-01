@@ -1,6 +1,5 @@
 require_relative 'player'
 require 'yaml'
-require 'pry-byebug'
 
 # Holds script for the game hangman
 class Hangman
@@ -84,15 +83,11 @@ class Hangman
   end
 
   def guess_included?(guess)
-    return true if guess.length == 1 && word.include?(guess)
-
-    false
+    true if guess.length == 1 && word.include?(guess)
   end
 
   def victory?(guess)
-    return true if guess == word
-
-    true if hidden_word(word) == word
+    true if guess == word || hidden_word(word) == word
   end
 
   def victory
