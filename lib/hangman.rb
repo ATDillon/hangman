@@ -1,5 +1,5 @@
 require_relative 'player'
-require 'yaml'
+require_relative 'save_system'
 
 # Holds script for the game hangman
 class Hangman
@@ -9,14 +9,15 @@ class Hangman
 
   attr_accessor :word, :tries
   attr_writer :guessed
-  attr_reader :player, :dictionary
+  attr_reader :player, :dictionary, :serialize
 
-  def initialize(player:)
+  def initialize(player:, serialize:)
     @player = player
     @dictionary = File.readlines('google-10000-english-no-swears.txt')
     @word = word_picker
     @tries = 8
     @guessed = []
+    @serialize = serialize
   end
 
   def start_menu
@@ -30,30 +31,17 @@ class Hangman
       retry
     end
 
-    game if response == '!start'
-    load_game.game if response == '!load'
+    return game if response == '!start'
+
+    load_game.game
   end
 
   def save_game
-    save = File.open('saves/save.csv', 'w')
-    save.puts YAML.dump(self)
-    save.close
-    exit
-  end
-
-  def no_saves
-    puts 'No saves exist, returning to start menu'
-    start_menu
+    serialize.save_menu(command: '!save', game: self)
   end
 
   def load_game
-    return no_saves unless File.exist?('saves/save.csv')
-
-    save = File.open('saves/save.csv', 'r')
-    save_file = save.read
-    save.close
-
-    YAML.safe_load(save_file, [self.class, player.class])
+    serialize.save_menu(command: '!load', game: self, classes_to_load: [self.class, player.class, serialize.class])
   end
 
   def word_picker
@@ -131,3 +119,5 @@ class Hangman
     start_menu
   end
 end
+
+Hangman.new(player: Player.new(name: 'Player'), serialize: SaveSystem.new).play_hangman
