@@ -86,6 +86,12 @@ class Hangman
     puts "You lose! Better luck next time! The secret word was #{word}"
   end
 
+  def round_info
+    puts "Incorrect letters guessed: #{incorrect_letters}"
+    puts "Tries remaining: #{tries}"
+    puts hidden_word
+  end
+
   def round(guess)
     return if victory?(guess)
 
@@ -95,15 +101,13 @@ class Hangman
 
     self.tries -= 1 unless guess_included?(guess)
 
-    puts "Tries remaining: #{tries}"
-    puts hidden_word
-    puts "Incorrect letters guessed: #{incorrect_letters}"
+    round_info
   end
 
   protected
 
   def game
-    puts hidden_word
+    print round_info
     while tries.positive?
       guess = player_guess
       round(guess)
@@ -115,9 +119,9 @@ class Hangman
 
   public
 
-  def play_hangman
+  def play_game
     start_menu
   end
 end
 
-Hangman.new(player: Player.new(name: 'Player'), serialize: SaveSystem.new).play_hangman
+Hangman.new(player: Player.new(name: 'Player'), serialize: SaveSystem.new).play_game

@@ -21,7 +21,7 @@ class SaveSystem
   end
 
   def return_to_game(game)
-    game.play_hangman
+    game.play_game
   end
 
   def save_game(game)
